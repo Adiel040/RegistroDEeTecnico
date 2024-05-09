@@ -12,4 +12,12 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="microsoft.EntityFrameworkCore.sqlite" Version="8.0.4" />
+    <PackageReference Include="microsoft.EntityFrameworkCore.tools" Version="8.0.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>
