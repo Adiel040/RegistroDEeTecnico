@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RegistroDEeTecnico.Components;
 using RegistroDEeTecnico.DAL;
+using RegistroDEeTecnico.Services;
 
 namespace RegistroDEeTecnico
 {
@@ -17,6 +18,8 @@ namespace RegistroDEeTecnico
             var ConStr = builder.Configuration.GetConnectionString("ConStr");
 
             builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
+
+            builder.Services.AddScoped<TecnicosServices>();
 
             var app = builder.Build();
 
