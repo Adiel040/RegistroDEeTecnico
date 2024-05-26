@@ -1,0 +1,116 @@
+﻿@page "/TipoTecnicos/index"
+@inject TipoTecnicosService tipoTecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Consulta Tipos Técnicos</PageTitle>
+
+<div class="card">
+    <div class="card-header text-center py-2 rounded">
+        <h3 style="font-weight: bold;" class="mb-0">Consulta Tipos Técnicos</h3>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3 text-end">
+                <a href="/TipoTecnico/Create" class="btn btn-success" type="button">
+                    <span class="bi bi-pencil-square" aria-hidden="true"></span> Crear
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>TipoId</th>
+                    <th>Descripción</th>
+                    <th>Detalle</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in ListaTipoTecnicos)
+                {
+                    <tr>
+                        <td>@t.tipoId</td>
+                        <td>@t.Descripcion</td>
+                        <td>
+                            <a href="/TipoTecnico/Details/@t.tipoId" style="border: none; background-color: transparent;" class="btn-detalle">
+                                <span class="bi bi-info-circle-fill" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/TipoTecnico/Edit/@t.tipoId" style="border: none; background-color: transparent;" class="btn-editar">
+                                <span class="bi bi-pencil-square" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/TipoTecnico/Delete/@t.tipoId" style="border: none; background-color: transparent;" class="btn-eliminar">
+                                <span class="bi bi-trash" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer text-end">
+        <p>Total de Tipos Técnicos: @ListaTipoTecnicos.Count</p>
+    </div>
+</div>
+
+@code {
+    public List<TiposTecnicos> ListaTipoTecnicos { get; set; } = new List<TiposTecnicos>();
+    private string filtro = "id";
+    private string valorFiltro = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ListaTipoTecnicos = await tipoTecnicoService.Listar(c => true);
+        }
+        catch (Exception ex)
+        {
+            // Manejo del error inicial
+            Console.WriteLine($"Error initializing: {ex.Message}");
+        }
+    }
+
+    private async Task Buscar()
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(valorFiltro))
+            {
+                if (filtro == "id" && int.TryParse(valorFiltro, out int TecnicoId))
+                {
+                    ListaTipoTecnicos = await tipoTecnicoService.Listar(t => t.tipoId == TecnicoId);
+                }
+                else if (filtro == "nombre")
+                {
+                    ListaTipoTecnicos = await tipoTecnicoService.Listar(t => t.Descripcion == valorFiltro);
+                }
+            }
+            else
+            {
+                ListaTipoTecnicos = await tipoTecnicoService.Listar(p => true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en Buscar(): {ex.Message}");
+            ListaTipoTecnicos = new List<TiposTecnicos>();
+        }
+    }
+
+    private void IrEliminar(int tipoId)
+    {
+        navigationManager.NavigateTo($"/TipoTecnico/Delete/TipoId={tipoId}");
+    }
+}

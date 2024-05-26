@@ -20,7 +20,8 @@ namespace RegistroDEeTecnico
             builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
 
             builder.Services.AddScoped<TecnicosServices>();
-
+            builder.Services.AddScoped<TipoTecnicosService>();
+            builder.Services.AddBlazorBootstrap();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

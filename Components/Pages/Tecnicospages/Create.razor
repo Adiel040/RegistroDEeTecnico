@@ -1,0 +1,134 @@
+﻿@page "/Tecnicos/Create"
+@inject TecnicosServices tecnicosServices
+
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Registro de Técnicos</PageTitle>
+<EditForm Model="Tecnico" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    @* <div style="text-align:right"> *@
+    <div style="width: 100%; text-align: right;">
+        <button style="display: inline-block;" class="bi bi-box-arrow-left" @onclick="Retroceder">Volver</button>
+    </div>
+
+    <div class="card">
+        <div class="card-header  text-center py-2 rounded">
+            <h3> <i class="fas fa-clipboard-list"></i> Registro de Técnicos</h3>
+        </div>
+
+        <div class="card-body">
+            <!-- TecnicoId -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="TecnicoId" class="form-label">TécnicoId:</label>
+                    <div class="input-group">
+                        <InputNumber @bind-Value="Tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
+                        <ValidationMessage For="@(() => Tecnico.TecnicoId)" />
+                    </div>
+                </div>
+            </div>
+            <!-- Tipo tecnico -->
+          @*  @ <div class="mb-3">
+                <label> Tipo de T&eacute;cnico </label>
+                <InputSelect @bind-Value="tecnico.TipoId" class="form-select">
+                    <option value="0">Elija un tipo de tecnico</option>
+                    @foreach (var tipo in tipos)
+                    {
+                        <option value="@tipo.TipoId">@tipo.Descripcion</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => tecnico.Sueldohora)" />
+            </div>  *@
+            <!-- Nombres -->
+            <div class="mb-3">
+                <label for="Nombre" class="form-label">Nombre:</label>
+                <InputText @bind-Value="Tecnico.Nombre" class="form-control" />
+                <ValidationMessage For="@(() => Tecnico.Nombre)" />
+                @if (Existe)
+                {
+                    <span class="text-danger">Ya existe una persona que tiene este nombre.</span>
+                }
+            </div>
+            <!-- SueldoHora -->
+            <div class="mb-3">
+                <label for="Sueldohora" class="form-label">SueldoHora:</label>
+                <InputNumber @bind-Value="Tecnico.SueldoHora" class="form-control" />
+                <ValidationMessage For="@(() => Tecnico.SueldoHora)" />
+            </div>
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-center mt-3">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-outline-success ml-2"><span class=" bi bi-check-circle-fill"></span> Guardar</button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Eliminar"><i class="bi bi-trash-fill"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TecnicoId { get; set; }
+
+    public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    private bool Existe = false;
+
+    public async Task Nuevo()
+    {
+        Tecnico = new Tecnicos();
+        Existe = false;
+    }
+
+    public async Task Buscar()
+    {
+        Existe = false;
+        var TecnicoEncontrado = await tecnicosServices.Buscar(Tecnico.TecnicoId);
+
+        if (TecnicoEncontrado != null)
+        {
+            Tecnico = TecnicoEncontrado;
+        }
+        else
+        {
+            Nuevo();
+        }
+    }
+
+    public async Task Guardar()
+    {
+        if (await Validar())
+        {
+            return;
+        }
+
+        var guardo = await tecnicosServices.Guardar(Tecnico);
+        if (guardo)
+        {
+            Nuevo();
+            navigationManager.NavigateTo("/Tecnicos/index");
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await tecnicosServices.Eliminar(Tecnico.TecnicoId);
+        Nuevo();
+    }
+
+    private async Task Retroceder()
+    {
+        navigationManager.NavigateTo("/Tecnicos/index");
+    }
+
+    public async Task<bool> Validar()
+    {
+        var listaTecnicos = await tecnicosServices.Listar(T => T.Nombre.ToLower() == Tecnico.Nombre.ToLower() && T.TecnicoId != Tecnico.TecnicoId);
+        Existe = listaTecnicos.Any();
+        return Existe;
+    }
+
+
+}

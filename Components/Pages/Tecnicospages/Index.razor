@@ -1,0 +1,73 @@
+﻿@page "/Tecnicos/index"
+@inject TecnicosServices tecnicosServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+
+
+<div class="card-header text-center py-2 rounded">
+    <h3 style="font-weight: bold;" class="mb-0">Consulta De Técnicos</h3>
+</div>
+
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-3 text-end">
+            <a href="/Tecnicos/Create" class="btn btn-success" type="button">
+                <span class="bi bi-pencil-square" aria-hidden="true"></span> Crear
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th>TecnicoId</th>
+            <th>Nombre</th>
+            <th>SueldoHora</th>
+            <th>Detalles</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var T in ListaTecnico)
+        {
+            <tr>
+                <td>@T.TecnicoId</td>
+                <td>@T.Nombre</td>
+                <td>SueldoHora</td>
+                <td>
+                    <a href="/tecnicos/Details/@T.TecnicoId" style="border: none; background-color: transparent;" class="btn-detalle">
+                        <span class="bi bi-info-circle-fill" style="font-size: 2rem;"></span>
+                    </a>
+                </td>
+                <td>
+                    <a href="/Tecnico/Edit/@T.TecnicoId" style="border: none; background-color: transparent;" class="btn-editar">
+                        <span class="bi bi-pencil-square" style="font-size: 2rem;"></span>
+                    </a>
+                </td>
+                <td>
+                    <a href="/Tecnicos/Delete/@T.TecnicoId" style="border: none; background-color: transparent;" class="btn-eliminar">
+                        <span class="bi bi-trash" style="font-size: 2rem;"></span>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="card-footer text-end">
+    <T>Total de Tipos Técnicos: @ListaTecnico.Count</T>
+</div>
+
+@code {
+    public List<Tecnicos> ListaTecnico { get; set; } = new List<Tecnicos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTecnico = await tecnicosServices.Listar(T => T.TecnicoId > 0);
+    }
+}

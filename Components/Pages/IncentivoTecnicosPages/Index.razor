@@ -1,0 +1,124 @@
+﻿@page "/IncentivosTecnico/index"
+@inject IncentivosTecnicoServices incentivosTecnicoServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Consulta Incentivo de Técnicos</PageTitle>
+
+<div class="card">
+    <div class="card-header text-center py-2 rounded">
+        <h3 style="font-weight: bold;" class="mb-0">Consulta de Incentivo Técnicos</h3>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3 text-end">
+                <a href="/Tecnico/Create" class="btn btn-success" type="button">
+                    <span class="bi bi-pencil-square" aria-hidden="true"></span> Crear
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>TecnicoId</th>
+                    <th>IncentivoId</th>
+                    <th></th>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th>CantidadServicio</th>
+                    <th>Detalle</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in ListaIncentivoTecnico)
+                {
+                    <tr>
+                        <td>@i.TecnicoId</td>
+                        <td>@i.Descripcion</td>
+                        <td>IncentivoId</td>
+                        <td>Fecha</td>
+                        <td>CantidadServicio</td>
+                        <td></td>
+                        <td>
+                            <a href="/IncentivoTecnico/Details/@i.IncentivoId" style="border: none; background-color: transparent;" class="btn-detalle">
+                                <span class="bi bi-info-circle-fill" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/IncentivoTecnico/Edit/@i.IncentivoId" style="border: none; background-color: transparent;" class="btn-editar">
+                                <span class="bi bi-pencil-square" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/IncentivosTecnico/Delete/@i.IncentivoId" style="border: none; background-color: transparent;" class="btn-eliminar">
+                                <span class="bi bi-trash" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer text-end">
+        <p>Total de Incentivo Técnicos: @ListaIncentivosTecnico.Count</p>
+    </div>
+</div>
+
+@code {
+    public List<IncentivosTecnicos> ListaTipoTecnicos { get; set; } = new List<IncentivosTecnicos>();
+    private string filtro = "id";
+    private string valorFiltro = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ListaTipoTecnicos = await incentivosTecnicoServices.Listar(c => true);
+        }
+        catch (Exception ex)
+        {
+            // Manejo del error inicial
+            Console.WriteLine($"Error initializing: {ex.Message}");
+        }
+    }
+
+    private async Task Buscar()
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(valorFiltro))
+            {
+                if (filtro == "id" && int.TryParse(valorFiltro, out int TecnicoId))
+                {
+                    ListaTipoTecnicos = await incentivosTecnicoServices.Listar(i => i.IncentivoId == TecnicoId);
+                }
+                else if (filtro == "nombre")
+                {
+                    ListaTipoTecnicos = await incentivosTecnicoServices.Listar(t => t.Descripcion == valorFiltro);
+                }
+            }
+            else
+            {
+                ListaTipoTecnicos = await incentivosTecnicoServices.Listar(p => true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error en Buscar(): {ex.Message}");
+            ListaTipoTecnicos = new List<IncentivosTecnicos>();
+        }
+    }
+
+    private void IrEliminar(int tipoId)
+    {
+        navigationManager.NavigateTo($"/TipoTecnico/Delete/TipoId={tipoId}");
+    }
+}

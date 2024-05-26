@@ -1,0 +1,81 @@
+﻿@page "/IncentivosTecnico/Delete/{IncentivoId:int}"
+@inject IncentivosTecnicoServices insentivosTecnicosServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar IncentivoTécnico</PageTitle>
+
+<div class="container">
+    <div class="card shadow-header">
+        <div class="card-header bg-primary text-white text-center py-2 rounded">
+            <h3><strong>Eliminar IncentivoTécnico</strong></h3>
+        </div>
+        <div class="card-header">
+            <h3 class="text-danger">¿Estás seguro de que quieres eliminar este insectivo técnico?</h3>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <div class="border-primary border-2 borde">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <ul class="list-unstyled">
+                                            <li><strong>IncentivoId:</strong> @incentivosTecnicos.IncentivoId</li>
+                                            <li><strong>Nombre:</strong> @incentivosTecnicos.Descripcion</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger" @onclick="EliminarIncentivoTecnicos">
+                            <i class="bi bi-trash-fill"></i> Eliminar
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+                            <i class="bi bi-box-arrow-left"></i> Volver
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (incentivosTecnicos == null)
+{
+    <p>Técnico no encontrado.</p>
+}
+
+@code {
+    [Parameter]
+    public int IncentivoId { get; set; }
+    public IncentivosTecnicos? incentivosTecnicos { get; set; } = new IncentivosTecnicos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IncentivoId != 0)
+        {
+            incentivosTecnicos = await incentivoTecnicosServices.Buscar(IncentivoId);
+        }
+    }
+
+    public async Task EliminarIncentivoTecnicos()
+    {
+        if (IncentivoId == 0 || incentivosTecnicos == null)
+        {
+            return;
+        }
+
+        if (await incentivoTecnicosServices.Eliminar(IncentivoId))
+        {
+            Volver();
+        }
+    }
+
+    public async Task Volver()
+    {
+        navigationManager.NavigateTo("/IncentivoTecnicos/index");
+    }
+}
