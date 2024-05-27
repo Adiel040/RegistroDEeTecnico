@@ -117,11 +117,7 @@
             var guardo = await incentivosTecnicoServices.Guardar(tecnico);
             if (guardo)
             {
-                if (tecnico.Monto != 0)
-                {
-                    await SumarIncentivo(tecnico.Monto);
-                }
-                Nuevo();
+                Nuevo(); // Aquí se llama al método Nuevo para limpiar los campos después de guardar
                 navigationManager.NavigateTo("/Incentivostecnicos/index");
             }
             else
@@ -136,15 +132,10 @@
         }
     }
 
-    private async Task SumarIncentivo(decimal Monto)
+    private void Nuevo()
     {
-        await incentivosTecnicoServices.SumarIncentivo(Monto);
-    }
-
-    public void Nuevo()
-    {
+        // Aquí se establecen los campos en su estado inicial o se crea una nueva instancia del modelo
         tecnico = new IncentivosTecnicos();
-        Existe = false;
     }
 
     public async Task<bool> Validar()

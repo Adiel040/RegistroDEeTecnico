@@ -1,49 +1,56 @@
-﻿@page &quot;/TipoTecnico/Details/{tipoId:int}&quot;
-@inject IncentivosTecnicoServices incentivoTecnicoServices
+﻿@page "/Incentivo/Details/{IncentivoId:int}"
+@inject IncentivosTecnicoServices IncentivosTecnicoServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
-&lt;PageTitle&gt;Detalles del incentivo de técnico&lt;/PageTitle&gt;
-@if (tipotecnico != null)
+
+<PageTitle>Detalles del Incentivo</PageTitle>
+
+@if (incentivo != null)
 {
-&lt;div class=&quot;container&quot;&gt;
-&lt;div class=&quot;card shadow-header&quot;&gt;
-&lt;div class=&quot;card-header bg-primary text-white text-center py-2 rounded&quot;&gt;
-&lt;h3 class=&quot;text-center&quot;&gt;&lt;strong&gt;Detalles del técnico&lt;/strong&gt;&lt;/h3&gt;
-&lt;/div&gt;
-&lt;div class=&quot;container&quot;&gt;
-&lt;div class=&quot;row&quot;&gt;
-&lt;div class=&quot;col-md-6&quot;&gt;
-&lt;div class=&quot;card-body&quot;&gt;
-&lt;ul class=&quot;list-unstyled&quot;&gt;
-&lt;li&gt;&lt;strong&gt;IncentivoId:&lt;/strong&gt; @incentivoTecnicos.IncentivoId&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Descripción:&lt;/strong&gt; @incentivoTecnicos.Descripcion&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;card-footer&quot;&gt;
-&lt;button type=&quot;button&quot; class=&quot;btn btn-outline-primary&quot; @onclick=&quot;Volver&quot;&gt;&lt;i class=&quot;bi
-bi-box-arrow-left&quot;&gt;&lt;/i&gt; Volver&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;
+    <div class="container">
+        <div class="card shadow-header">
+            <div class="card-header bg-primary text-white text-center py-2 rounded">
+                <h3 class="text-center"><strong>Detalles del Incentivo</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>IncentivoId:</strong> @incentivo.IncentivoId</li>
+                                <li><strong>Fecha:</strong> @incentivo.Fecha</li>
+                                <li><strong>TecnicoId:</strong> @incentivo.TecnicoId</li>
+                                <li><strong>Descripción:</strong> @incentivo.Descripcion</li>
+                                <li><strong>Cantidad Servicio:</strong> @incentivo.CantidadServicios</li>
+                                <li><strong>Monto:</strong> @incentivo.Monto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
+        </div>
+    </div>
 }
 else
 {
-&lt;p&gt;IncentivoTecnico no encontrado.&lt;/p&gt;
-}
-@code {
-[Parameter]
-public int IncentivoId { get; set; }
-private IncentivoTecnico incentivoTecnico;
-protected override async Task OnInitializedAsync()
-{
-tipotecnico = await incentivoTecnicoServices.Buscar(TipoId);
-}
-private async Task Volver()
-{
-navigationManager.NavigateTo(&quot;/Incentivostecnicos/index&quot;);
+    <p>Incentivo no encontrado.</p>
 }
 
+@code {
+    [Parameter]
+    public int IncentivoId { get; set; }
+    public IncentivosTecnicos? incentivo { get; set; } = new IncentivosTecnicos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        incentivo = await IncentivosTecnicoServices.Buscar(IncentivoId);
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Incentivos/index");
+    }
 }

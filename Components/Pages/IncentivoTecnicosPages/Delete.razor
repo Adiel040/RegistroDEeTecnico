@@ -57,7 +57,7 @@
     {
         if (IncentivoId != 0)
         {
-            incentivosTecnicos = await incentivoTecnicosServices.Buscar(IncentivoId);
+            incentivosTecnicos = await insentivosTecnicosServices.Buscar(IncentivoId);
         }
     }
 
@@ -68,7 +68,7 @@
             return;
         }
 
-        if (await incentivoTecnicosServices.Eliminar(IncentivoId))
+        if (await insentivosTecnicosServices.Eliminar(IncentivoId))
         {
             Volver();
         }

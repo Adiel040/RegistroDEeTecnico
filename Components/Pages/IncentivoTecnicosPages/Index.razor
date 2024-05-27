@@ -1,4 +1,4 @@
-﻿@page "/IncentivosTecnico/index"
+﻿@page "/Incentivos/index"
 @inject IncentivosTecnicoServices incentivosTecnicoServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-md-9"></div>
             <div class="col-md-3 text-end">
-                <a href="/Tecnico/Create" class="btn btn-success" type="button">
+                <a href="/IncentivosTecnico/Create" class="btn btn-success" type="button">
                     <span class="bi bi-pencil-square" aria-hidden="true"></span> Crear
                 </a>
             </div>
@@ -25,19 +25,19 @@
         <table class="table table-bordered text-center">
             <thead>
                 <tr>
-                    <th>TecnicoId</th>
                     <th>IncentivoId</th>
-                    <th></th>
                     <th>Fecha</th>
+                    <th>TecnicoId</th>
                     <th>Descripción</th>
                     <th>CantidadServicio</th>
+                    <th>Monto</th>
                     <th>Detalle</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var i in ListaIncentivoTecnico)
+                @foreach (var i in ListaTipoTecnicos)
                 {
                     <tr>
                         <td>@i.TecnicoId</td>
@@ -68,7 +68,7 @@
     </div>
 
     <div class="card-footer text-end">
-        <p>Total de Incentivo Técnicos: @ListaIncentivosTecnico.Count</p>
+        <p>Total de Incentivo Técnicos: @ListaTipoTecnicos.Count</p>
     </div>
 </div>
 
@@ -79,15 +79,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
+        
             ListaTipoTecnicos = await incentivosTecnicoServices.Listar(c => true);
-        }
-        catch (Exception ex)
-        {
-            // Manejo del error inicial
-            Console.WriteLine($"Error initializing: {ex.Message}");
-        }
+        
     }
 
     private async Task Buscar()

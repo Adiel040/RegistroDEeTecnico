@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RegistroDEeTecnico.Components;
 using RegistroDEeTecnico.DAL;
+using RegistroDEeTecnico.Models;
 using RegistroDEeTecnico.Services;
 
 namespace RegistroDEeTecnico
@@ -21,6 +22,7 @@ namespace RegistroDEeTecnico
 
             builder.Services.AddScoped<TecnicosServices>();
             builder.Services.AddScoped<TipoTecnicosService>();
+            builder.Services.AddScoped<IncentivosTecnicoServices>();
             builder.Services.AddBlazorBootstrap();
             var app = builder.Build();
 
